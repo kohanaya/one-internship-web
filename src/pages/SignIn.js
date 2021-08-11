@@ -82,7 +82,7 @@ export default function SignIn() {
                         id="password"
                         autoComplete="current-password"
                     />
-                    <Link to ="mainpage">
+                    <Link to ="dashboard">
                     <Button
                         type="submit"
                         fullWidth
