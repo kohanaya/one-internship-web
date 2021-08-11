@@ -82,10 +82,7 @@ export default function SignIn() {
                         id="password"
                         autoComplete="current-password"
                     />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                    />
+                    <Link to ="mainpage">
                     <Button
                         type="submit"
                         fullWidth
@@ -93,14 +90,11 @@ export default function SignIn() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign In
+                         Sign In
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
-                                Forgot password?
-                            </Link>
-                        </Grid>
+                        </Link>
+
+                    <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link to="/signup">
                                 Don't have an account? Sign Up

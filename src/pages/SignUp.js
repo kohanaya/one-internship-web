@@ -62,29 +62,19 @@ export default function SignUp() {
                 </Typography>
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} >
                             <TextField
                                 autoComplete="fname"
-                                name="firstName"
+                                name="username"
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="firstName"
-                                label="First Name"
+                                id="username"
+                                label="Username"
                                 autoFocus
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="lname"
-                            />
-                        </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
@@ -115,15 +105,18 @@ export default function SignUp() {
                             />
                         </Grid>
                     </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Sign Up
-                    </Button>
+
+                        <Link to ="mainpage">
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                            >
+                            Sign Up
+                            </Button>
+                        </Link>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link to="/">
