@@ -1,10 +1,11 @@
 import './App.css';
-import SignIn from "./pages/SignIn";
-import React, {Component} from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import SignUp from "./pages/SignUp";
-import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
+import SignIn from "./components/SignIn";
+import React from 'react';
+import {Route, Switch} from 'react-router-dom';
+import SignUp from "./components/SignUp";
+import NotFound from "./components/NotFound";
+import Dashboard from "./components/Dashboard";
+import EditNote from "./components/EditNoteModal";
 
 function App() {
     return (
@@ -13,7 +14,8 @@ function App() {
                 <Route path='/' component={SignIn} exact/>
                 <Route path='/signup' component={SignUp}/>
                 <Route path='/dashboard' component={Dashboard}/>
-                <Route component={NotFound} />
+                <Route path='/edit' component={EditNote}/>
+                <Route component={NotFound}/>
             </Switch>
         </div>
     );
