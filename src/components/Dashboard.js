@@ -209,16 +209,13 @@ function Dashboard() {
                 </DialogActions>
             </Dialog>
 
-            {editOpen ?
-                <EditNoteModal
-                    note={editNote}
-                    open={editOpen}
-                    handleClose={handleEditClose}
-                    handleSave={handleEditSave}
-                    categories={categories}
-                />
-                : null
-            }
+            <EditNoteModal
+                note={editNote}
+                open={editOpen}
+                handleClose={handleEditClose}
+                handleSave={handleEditSave}
+                categories={categories}
+            />
         </Container>
     );
 }

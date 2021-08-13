@@ -16,6 +16,12 @@ function EditNoteModal({note, open, handleClose, categories}) {
     const [noteText, setNoteText] = React.useState(note.text);
     const [value, setValue] = React.useState(note.category);
 
+    React.useEffect(() => {
+        setNoteId(note.id);
+        setNoteText(note.text);
+        setValue(note.category);
+    }, [note]);
+
     const handleEditClose = () => {
         handleClose();
     }
