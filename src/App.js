@@ -6,6 +6,7 @@ import SignUp from "./components/SignUp";
 import NotFound from "./components/NotFound";
 import Dashboard from "./components/Dashboard";
 import EditNote from "./components/EditNoteModal";
+import AdminPage from "./components/AdminPage";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path='/signup' component={SignUp}/>
                 <Route path='/dashboard' component={Dashboard}/>
                 <Route path='/edit' component={EditNote}/>
+                <Route path='/admin' component={AdminPage}/>
                 <Route component={NotFound}/>
             </Switch>
         </div>

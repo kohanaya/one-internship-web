@@ -106,13 +106,16 @@ function Dashboard() {
                     <Button color="inherit" component={Link} to={'/'}>
                         Logout
                     </Button>
+                    <Button color="inherit" component={Link} to={'/admin'}>
+                        ADMIN
+                    </Button>
                 </Toolbar>
             </AppBar>
 
             <Grid container spacing={4}>
                 <Grid item xs={6} md={8}>
 
-                    <Typography variant="h6" className={classes.title}>
+                    <Typography variant="h6" className={classes.title} style={ {marginTop: '20px'}}>
                         My Notes:
                     </Typography>
 
@@ -178,8 +181,8 @@ function Dashboard() {
                 </Grid>
             </Grid>
 
-            <Box mt={3}>
-                <Button variant="contained">
+            <Box mt={6}>
+                <Button variant="contained" style={ { marginRight: '10px'}}>
                     Previous Page
                 </Button>
                 <Button variant="contained"
