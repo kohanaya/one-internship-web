@@ -60,6 +60,10 @@ function Dashboard () {
   const [categoryValue, setCategoryValue] = React.useState('')
   const [notes, setNotes] = React.useState([])
   const [categories, setCategories] = React.useState([])
+  const [noteIdToDelete, setNoteIdToDelete] = React.useState()
+  const [editOpen, setEditOpen] = React.useState(false)
+  const [editNote, setEditNote] = React.useState({ id: null, category: null, text: '' })
+
   const auth = useAuth()
 
   useEffect(() => {
@@ -76,23 +80,34 @@ function Dashboard () {
       })
   }, [])
 
-  // modal
-  const [deleteOpen, setDeleteOpen] = React.useState(false)
-  const [editOpen, setEditOpen] = React.useState(false)
-  const [editNote, setEditNote] = React.useState({ id: null, category: null, text: '' })
-
   const handleChange = (event) => {
     let newVal = event.target.value
     if (!newVal) setCategoryValue('')
     else setCategoryValue(parseInt(newVal))
   }
 
-  const handleDeleteBtn = () => setDeleteOpen(true)
-  const handleDeleteClose = () => setDeleteOpen(false)
+  const handleDeleteBtn = (note) => {
+    setNoteIdToDelete(note.id)
+  }
+
+  const handleDeleteClose = (remove) => {
+    if (remove) {
+      axios.delete('/api/notes/' + noteIdToDelete)
+        .then(() => {
+          setNoteIdToDelete(null)
+          axios.get('/api/notes').then(result => setNotes(result.data))
+          axios.get('/api/categories').then(result => setCategories(result.data))
+        })
+    } else {
+      setNoteIdToDelete(null)
+    }
+  }
+
   const handleEditBtn = (note) => {
     setEditNote(note)
     setEditOpen(true)
   }
+
   const handleEditClose = (reload) => {
     // reload list of notes
     if (reload) {
@@ -115,7 +130,7 @@ function Dashboard () {
           </Button>
 
           {auth.user.admin && (
-            <Button color="inherit" component={Link} to='/admin'>
+            <Button color="inherit" component={Link} to="/admin">
               ADMIN
             </Button>
           )}
@@ -156,7 +171,7 @@ function Dashboard () {
                     secondary={note.categoryId}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={handleDeleteBtn}>
+                    <IconButton edge="end" onClick={() => handleDeleteBtn(note)}>
                       <DeleteIcon/>
                     </IconButton>
                     <IconButton edge="end" onClick={() => handleEditBtn(note)}>
@@ -204,7 +219,7 @@ function Dashboard () {
       </Box>
 
       <Dialog
-        open={deleteOpen}
+        open={!!noteIdToDelete}
         onClose={handleDeleteClose}
       >
         <DialogTitle id="alert-dialog-title">{'Are you sure want to delete?'}</DialogTitle>
@@ -214,10 +229,10 @@ function Dashboard () {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteClose} color="secondary">
+          <Button onClick={() => handleDeleteClose(true)} color="secondary">
             Delete
           </Button>
-          <Button onClick={handleDeleteClose} color="primary" autoFocus>
+          <Button onClick={() => handleDeleteClose(false)} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
