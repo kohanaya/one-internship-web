@@ -113,9 +113,13 @@ function Dashboard () {
           <Button color="inherit" onClick={auth.logout}>
             Logout
           </Button>
-          <Button color="inherit" component={Link} to={'/admin'}>
-            ADMIN
-          </Button>
+
+          {auth.user.admin && (
+            <Button color="inherit" component={Link} to='/admin'>
+              ADMIN
+            </Button>
+          )}
+
         </Toolbar>
       </AppBar>
 
