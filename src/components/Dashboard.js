@@ -57,7 +57,11 @@ const useStyles = makeStyles((theme) => ({
 
 function Dashboard () {
   const classes = useStyles()
+
+  // filters:
   const [categoryValue, setCategoryValue] = React.useState('')
+  const [searchValue, setSearchValue] = React.useState('')
+
   const [notes, setNotes] = React.useState([])
   const [categories, setCategories] = React.useState([])
   const [noteIdToDelete, setNoteIdToDelete] = React.useState()
@@ -66,21 +70,28 @@ function Dashboard () {
 
   const auth = useAuth()
 
-  useEffect(() => {
-    axios.get('/api/notes')
+  const refreshData = () => {
+    axios.get('/api/notes', { params: { noteContains: searchValue, categoryId: categoryValue } })
       .then(result => {
         setNotes(result.data)
       })
-  }, [])
-
-  useEffect(() => {
     axios.get('/api/categories')
       .then(result => {
         setCategories(result.data)
       })
-  }, [])
+  }
 
-  const handleChange = (event) => {
+  useEffect(() => {
+    refreshData()
+  }, [categoryValue, searchValue])
+
+  const handleSearchUpdate = (event) => {
+    let newVal = event.target.value
+    console.log(newVal)
+    setSearchValue(newVal)
+  }
+
+  const handleCategoryChange = (event) => {
     let newVal = event.target.value
     if (!newVal) setCategoryValue('')
     else setCategoryValue(parseInt(newVal))
@@ -95,8 +106,7 @@ function Dashboard () {
       axios.delete('/api/notes/' + noteIdToDelete)
         .then(() => {
           setNoteIdToDelete(null)
-          axios.get('/api/notes').then(result => setNotes(result.data))
-          axios.get('/api/categories').then(result => setCategories(result.data))
+          refreshData()
         })
     } else {
       setNoteIdToDelete(null)
@@ -111,11 +121,11 @@ function Dashboard () {
   const handleEditClose = (reload) => {
     // reload list of notes
     if (reload) {
-      axios.get('/api/notes').then(result => setNotes(result.data))
-      axios.get('/api/categories').then(result => setCategories(result.data))
+      refreshData()
     }
     setEditOpen(false)
   }
+
   const handleEditSave = () => setEditOpen(false)
 
   return (
@@ -147,8 +157,15 @@ function Dashboard () {
 
           <Grid container>
             <form className={classes.root} noValidate autoComplete="off">
-              <TextField id="outlined-basic" label="Note search" variant="outlined"/>
+              <TextField
+                id="outlined-basic"
+                label="Note search" variant="outlined"
+                fullWidth
+                onChange={handleSearchUpdate}
+              />
             </form>
+
+            &nbsp;
 
             <Button variant="contained" color="secondary"
                     onClick={handleEditBtn}>
@@ -168,7 +185,7 @@ function Dashboard () {
                   </ListItemAvatar>
                   <ListItemText
                     primary={note.note}
-                    secondary={note.categoryId}
+                    secondary={note.categoryName}
                   />
                   <ListItemSecondaryAction>
                     <IconButton edge="end" onClick={() => handleDeleteBtn(note)}>
@@ -192,7 +209,7 @@ function Dashboard () {
           <div className={classes.rootForFilters}>
             <FormControl component="fieldset">
               <FormLabel component="legend">Choose one</FormLabel>
-              <RadioGroup name="category" value={categoryValue} onChange={handleChange}>
+              <RadioGroup name="category" value={categoryValue} onChange={handleCategoryChange}>
                 <FormControlLabel value="" control={<Radio/>} label="All"/>
                 {categories.map(category => (
                   <FormControlLabel
