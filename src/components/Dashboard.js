@@ -30,6 +30,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import EditNoteModal from "./EditNoteModal";
+import { useAuth } from './use-auth'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -74,6 +75,7 @@ function Dashboard() {
         {id: 1, name: "personal"},
         {id: 2, name: "work"}
     ]);
+    const auth = useAuth();
 
     // modal
     const [deleteOpen, setDeleteOpen] = React.useState(false);
@@ -92,6 +94,7 @@ function Dashboard() {
     const handleEditBtn = (note) => {
         setEditNote(note);
         setEditOpen(true);
+        setEditOpen(true);
     }
     const handleEditClose = () => setEditOpen(false);
     const handleEditSave = () => setEditOpen(false);
@@ -103,7 +106,7 @@ function Dashboard() {
                     <Typography variant="h6" className={classes.title}>
                         Dashboard
                     </Typography>
-                    <Button color="inherit" component={Link} to={'/'}>
+                    <Button color="inherit" onClick={auth.logout}>
                         Logout
                     </Button>
                     <Button color="inherit" component={Link} to={'/admin'}>
