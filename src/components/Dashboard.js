@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -31,6 +31,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import EditNoteModal from "./EditNoteModal";
 import { useAuth } from './use-auth'
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,26 +57,21 @@ const useStyles = makeStyles((theme) => ({
 
 function Dashboard() {
     const classes = useStyles();
-    const [dense, setDense] = React.useState(false);
     const [secondary, setSecondary] = React.useState(false);
     const [categoryValue, setCategoryValue] = React.useState('');
-    const [notes, setNotes] = React.useState([
-        {
-            id: 1,
-            category: {id: 1, name: "personal"},
-            text: "hello world"
-        },
-        {
-            id: 2,
-            category: {id: 1, name: "personal"},
-            text: "aloha"
-        }
-    ]);
-    const [categories, setCategories] = React.useState([
-        {id: 1, name: "personal"},
-        {id: 2, name: "work"}
-    ]);
+    const [notes, setNotes] = React.useState([]);
+    const [categories, setCategories] = React.useState([]);
     const auth = useAuth();
+
+    useEffect(async () => {
+        const result = await axios.get('/api/notes');
+        setNotes(result.data);
+    }, []);
+
+    useEffect(async () => {
+        const result = await axios.get('/api/categories');
+        setCategories(result.data);
+    }, []);
 
     // modal
     const [deleteOpen, setDeleteOpen] = React.useState(false);
@@ -135,7 +131,7 @@ function Dashboard() {
 
                     <div className={classes.demo}>
                         {notes.length === 0 ? <div>No notes.</div> : null}
-                        <List dense={dense}>
+                        <List dense={false}>
                             {notes.map(note => (
                                 <ListItem key={note.id}>
                                     <ListItemAvatar>
@@ -144,7 +140,7 @@ function Dashboard() {
                                         </Avatar>
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary={note.text}
+                                        primary={note.note}
                                         secondary={secondary ? 'Secondary text' : null}
                                     />
                                     <ListItemSecondaryAction>
