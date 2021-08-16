@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useAuth } from './use-auth'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,29 +37,23 @@ export default function SignIn () {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const history = useHistory()
-  const location = useLocation()
   const auth = useAuth()
 
-  const { from } = location.state || { from: { pathname: '/dashboard' } }
-
   if (auth.isAuthenticated()) {
-    history.replace(from)
+    history.replace('/dashboard')
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    console.log('username: ' + username)
-    console.log('password: ' + password)
-
     if (username === '' || password === '') {
-      alert('Enter username and password')
+      setError('Enter username and password.')
       return
     }
 
     auth.login(username, password)
       .then(() => {
-        history.replace(from)
+        history.replace('/dashboard')
       })
       .catch(() => {
         setError('Invalid username and/or password.')
@@ -79,7 +73,7 @@ export default function SignIn () {
         <Typography color="error">
           {error}
         </Typography>
-        <form className={classes.form} noValidate method="POST" onSubmit={handleSubmit}>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"

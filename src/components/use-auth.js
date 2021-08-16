@@ -36,7 +36,7 @@ function useProvideAuth () {
   }
 
   const signup = (username, password) => {
-    return axios.post('/api/register', { username, password })
+    return axios.post('/api/signup', { username, password })
       .then((response) => {
         const user = response.data
         setUser(user)
