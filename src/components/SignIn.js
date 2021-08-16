@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -39,9 +39,11 @@ export default function SignIn () {
   const history = useHistory()
   const auth = useAuth()
 
-  if (auth.isAuthenticated()) {
-    history.replace('/dashboard')
-  }
+  useEffect(() => {
+    if (auth.isAuthenticated()) {
+      history.replace('/dashboard')
+    }
+  }, [auth, history])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -85,7 +87,7 @@ export default function SignIn () {
             autoComplete="username"
             autoFocus
             value={username}
-            error={error}
+            error={!!error}
             onInput={(e) => setUsername(e.target.value)}
           />
           <TextField
@@ -99,7 +101,7 @@ export default function SignIn () {
             id="password"
             autoComplete="current-password"
             value={password}
-            error={error}
+            error={!!error}
             onInput={(e) => setPassword(e.target.value)}
           />
           <Button

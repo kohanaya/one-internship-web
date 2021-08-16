@@ -99,7 +99,7 @@ export default function SignUp () {
                 label="Username"
                 autoFocus
                 value={username}
-                error={error}
+                error={!!error}
                 onInput={(e) => setUsername(e.target.value)}
               />
             </Grid>
@@ -115,7 +115,7 @@ export default function SignUp () {
                 id="password"
                 autoComplete="current-password"
                 value={password}
-                error={error}
+                error={!!error}
                 onInput={(e) => setPassword(e.target.value)}
               />
 
