@@ -42,7 +42,7 @@ function EditNoteModal ({ note, open, handleClose, categories }) {
     }
 
     axios.post('/api/notes', {
-      noteId: noteId,
+      id: noteId,
       note: noteText,
       categoryName: category.name
     }).then((response) => {
