@@ -38,17 +38,28 @@ export default function AdminPage () {
   const [users, setUsers] = React.useState([])
 
   // edit password
-  const [userPass, setUserPass] = React.useState()
+  const [userEdit, setUserEdit] = React.useState()
   const [newPassword, setNewPassword] = React.useState()
 
+  function refreshData () {
+    axios.get('/api/users')
+      .then(result => {
+        setUsers(result.data)
+      })
+  }
+
+  useEffect(() => {
+    refreshData()
+  }, [])
+
   const handleChangePassBtn = (user) => {
-    setUserPass(user)
+    setUserEdit(user)
     setChangePassOpen(true)
   }
 
   const handleChangePassClose = (save) => {
     if (save) {
-      axios.post('/api/users/password', {userId: userPass.id, newPassword: newPassword})
+      axios.post('/api/users/password', { userId: userEdit.id, newPassword: newPassword })
         .then(() => {
           setChangePassOpen(false)
           setNewPassword('')
@@ -62,15 +73,22 @@ export default function AdminPage () {
     }
   }
 
-  const handleDeactivateBtn = () => setDeactivateOpen(true)
-  const handleDeactivateClose = () => setDeactivateOpen(false)
+  const handleDeactivateBtn = (user) => {
+    setUserEdit(user)
+    setDeactivateOpen(true)
+  }
 
-  useEffect(() => {
-    axios.get('/api/users')
-      .then(result => {
-        setUsers(result.data)
-      })
-  }, [])
+  const handleDeactivateClose = (save) => {
+    if (save) {
+      axios.post('/api/users/' + userEdit.id + '/enableDisable')
+        .then(() => {
+          setDeactivateOpen(false)
+          refreshData()
+        })
+    } else {
+      setDeactivateOpen(false)
+    }
+  }
 
   return (
     <Container fixed>
@@ -112,8 +130,8 @@ export default function AdminPage () {
                           style={{ marginRight: '10px' }}>
                     Change password
                   </Button>
-                  <Button variant="outlined" onClick={handleDeactivateBtn}>
-                    Deactivate user
+                  <Button variant="outlined" onClick={() => handleDeactivateBtn(row)}>
+                    {row.enabled ? 'deactivate' : 'activate'}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -159,17 +177,20 @@ export default function AdminPage () {
         open={changeDeactivateOpen}
         onClose={handleDeactivateClose}
       >
-        <DialogTitle id="alert-dialog-title">{'Are you sure you want to deactivate that user?'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Are you sure you want to change account status?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            That user will no longer be active
+            {userEdit && userEdit.enabled
+              ? 'That user will no longer be active'
+              : 'That user will be active'
+            }
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeactivateClose} color="secondary">
-            Deactivate
+          <Button onClick={() => handleDeactivateClose(true)} color="secondary">
+            {userEdit && userEdit.enabled ? 'deactivate' : 'activate'}
           </Button>
-          <Button onClick={handleDeactivateClose} color="primary" autoFocus>
+          <Button onClick={() => handleDeactivateClose(false)} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
