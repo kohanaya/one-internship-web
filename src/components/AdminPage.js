@@ -65,12 +65,12 @@ export default function AdminPage () {
 
 
       <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
+        <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <TableCell>USERNAME</TableCell>
-              <TableCell align="left">Active</TableCell>
               <TableCell align="left">Role</TableCell>
+              <TableCell align="left">Active</TableCell>
               <TableCell align="left">Action</TableCell>
             </TableRow>
           </TableHead>
