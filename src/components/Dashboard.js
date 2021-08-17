@@ -66,7 +66,7 @@ function Dashboard () {
   const [categories, setCategories] = React.useState([])
   const [noteIdToDelete, setNoteIdToDelete] = React.useState()
   const [editOpen, setEditOpen] = React.useState(false)
-  const [editNote, setEditNote] = React.useState({ id: null, category: null, text: '' })
+  const [editNote, setEditNote] = React.useState()
 
   const auth = useAuth()
 

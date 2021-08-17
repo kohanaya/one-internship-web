@@ -14,46 +14,50 @@ const filter = createFilterOptions()
 
 function EditNoteModal ({ note, open, handleClose, categories }) {
 
-  const [noteId, setNoteId] = React.useState(note.id)
-  const [noteText, setNoteText] = React.useState(note.text)
-  const [category, setCategory] = React.useState(note.category)
+  const [noteId, setNoteId] = React.useState()
+  const [noteText, setNoteText] = React.useState()
+  const [category, setCategory] = React.useState()
   const [error, setError] = React.useState('')
 
   React.useEffect(() => {
+    if (!note) {
+      note = { id: null, category: null, note: '' }
+    }
     setNoteId(note.id)
-    setNoteText(note.text)
-    setCategory(note.category)
+    setNoteText(note.note)
+    setCategory({ name: note.categoryName })
   }, [note])
 
   const handleEditClose = () => {
+    setError('')
     handleClose(false)
   }
 
   const handleSave = (e) => {
     e.preventDefault()
 
-    if (!noteText || !category) {
+    if (!noteText || !category.name) {
       setError('Note text and category required.')
-    }
-
-    if (!category.id) {
-      alert('not ready yet')
       return
     }
 
     axios.post('/api/notes', {
+      noteId: noteId,
       note: noteText,
-      categoryId: category.id // todo
+      categoryName: category.name
     }).then((response) => {
       handleClose(true)
-    }).catch((e) => {
-      debugger
-      setError('err')
+    }).catch((error) => {
+      if (error.response) {
+        setError(error.response.data.msg)
+      } else {
+        setError('Cannot save note.')
+      }
     })
   }
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleEditClose}>
       <DialogTitle id="form-dialog-title">Create/Update Note</DialogTitle>
       <DialogContent>
         <DialogContentText>
