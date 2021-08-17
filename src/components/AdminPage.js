@@ -19,6 +19,7 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogActions from '@material-ui/core/DialogActions'
 import Dialog from '@material-ui/core/Dialog'
 import axios from 'axios'
+import TextField from '@material-ui/core/TextField'
 
 const useStyles = makeStyles({
   table: {
@@ -33,12 +34,36 @@ export default function AdminPage () {
   const classes = useStyles()
   const [changePassOpen, setChangePassOpen] = React.useState(false)
   const [changeDeactivateOpen, setDeactivateOpen] = React.useState(false)
-  const handleChangePassBtn = () => setChangePassOpen(true)
-  const handleChangePassClose = () => setChangePassOpen(false)
+  const [error, setError] = React.useState('')
+  const [users, setUsers] = React.useState([])
+
+  // edit password
+  const [userPass, setUserPass] = React.useState()
+  const [newPassword, setNewPassword] = React.useState()
+
+  const handleChangePassBtn = (user) => {
+    setUserPass(user)
+    setChangePassOpen(true)
+  }
+
+  const handleChangePassClose = (save) => {
+    if (save) {
+      axios.post('/api/users/password', {userId: userPass.id, newPassword: newPassword})
+        .then(() => {
+          setChangePassOpen(false)
+          setNewPassword('')
+        })
+        .catch(() => {
+          setError('Something went wrong.')
+        })
+    } else {
+      setChangePassOpen(false)
+      setNewPassword('')
+    }
+  }
+
   const handleDeactivateBtn = () => setDeactivateOpen(true)
   const handleDeactivateClose = () => setDeactivateOpen(false)
-
-  const [users, setUsers] = React.useState([])
 
   useEffect(() => {
     axios.get('/api/users')
@@ -83,7 +108,7 @@ export default function AdminPage () {
                 <TableCell align="left">{row.admin ? 'Admin' : 'User'}</TableCell>
                 <TableCell align="left">{row.enabled ? 'Enabled' : 'Disabled'}</TableCell>
                 <TableCell align="left">
-                  <Button variant="outlined" onClick={handleChangePassBtn} color="primary"
+                  <Button variant="outlined" onClick={() => handleChangePassBtn(row)} color="primary"
                           style={{ marginRight: '10px' }}>
                     Change password
                   </Button>
@@ -107,12 +132,24 @@ export default function AdminPage () {
           <DialogContentText id="alert-dialog-description">
             The password will be changed permanently
           </DialogContentText>
+          <Typography color="error">
+            {error}
+          </Typography>
+          <TextField
+            id="text"
+            label="User password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleChangePassClose} color="secondary">
+          <Button onClick={() => handleChangePassClose(true)} color="secondary">
             Change
           </Button>
-          <Button onClick={handleChangePassClose} color="primary" autoFocus>
+          <Button onClick={() => handleChangePassClose(false)} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>
