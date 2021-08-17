@@ -58,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard () {
   const classes = useStyles()
 
+  const [page, setPage] = React.useState(1)
+
   // filters:
   const [categoryValue, setCategoryValue] = React.useState('')
   const [searchValue, setSearchValue] = React.useState('')
@@ -71,7 +73,13 @@ function Dashboard () {
   const auth = useAuth()
 
   const refreshData = () => {
-    axios.get('/api/notes', { params: { noteContains: searchValue, categoryId: categoryValue } })
+    axios.get('/api/notes', {
+      params: {
+        noteContains: searchValue,
+        categoryId: categoryValue,
+        page: page
+      }
+    })
       .then(result => {
         setNotes(result.data)
       })
@@ -83,7 +91,7 @@ function Dashboard () {
 
   useEffect(() => {
     refreshData()
-  }, [categoryValue, searchValue])
+  }, [categoryValue, searchValue, page])
 
   const handleSearchUpdate = (event) => {
     let newVal = event.target.value
@@ -225,13 +233,23 @@ function Dashboard () {
       </Grid>
 
       <Box mt={6}>
-        <Button variant="contained" style={{ marginRight: '10px' }}>
+        {page !== 1 &&
+        <Button variant="contained" style={{ marginRight: '10px' }} onClick={() => setPage(page - 1)}>
           Previous Page
         </Button>
+        }
+
+        <Typography style={{ marginRight: '10px', marginLeft: '10px'}}>
+          {page}
+        </Typography>
+
+        {notes.length === 5 &&
         <Button variant="contained"
-                color="primary">
+                color="primary"
+                onClick={() => setPage(page + 1)}>
           Next Page
         </Button>
+        }
 
       </Box>
 
